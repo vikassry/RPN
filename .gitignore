@@ -7,3 +7,7 @@ rpnTestRunner.exe
 spike.c
 spike.o
 spike.exe.core
+sp.c
+sp.exe
+sp.o
+sp.exe.core
