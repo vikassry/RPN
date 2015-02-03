@@ -1,0 +1,9 @@
+gcc.exe.core
+linkedList.c
+linkedList.h
+rpnTest.o
+rpnTestRunner.c
+rpnTestRunner.exe
+spike.c
+spike.o
+spike.exe.core
