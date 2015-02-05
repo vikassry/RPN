@@ -11,6 +11,7 @@ void test_evaluate_returns_the_result_of_postfix_addition_5_for_2_and_3(){
 void test_evaluate_returns_the_result_of_postfix_subtraction_minus_1_for_2_and_3(){
 	Result result = evaluate("2 3 -");
 	assertEqual(result.status, -1);
+	assertEqual(result.error, 0);
 }
 
 void test_evaluate_returns_the_result_of_postfix_multiplication_6_for_2_and_3(){
@@ -122,4 +123,9 @@ void test_evaluate_returns_the_result_with_error_having_1_for_less_number_of_ope
 void test_evaluate_returns_the_result_with_error_having_1_for_less_number_of_operators(){
 	Result result = evaluate("1 3 5 4 * + 5 -");
 	assertEqual(result.error, 1);
+}
+
+void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression(){
+	string rpn_expression = infixToPostfix("3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3");
+	assert(rpn_expression == "3 4 2 * 1 5 - 2 3 ^ ^ / +");
 }

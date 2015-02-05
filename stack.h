@@ -10,16 +10,8 @@ typedef char* string;
 
 struct stack{
 	LinkedList *list;
-	node_ptr top;
+	Node **top;
 };
-
-void print_stack(Stack);
-void free_stack(Stack*);
-
-Stack createStack(void);
-int push(Stack*, void *);
-void *pop(Stack*);
-
 
 struct node {
 	void *data;
@@ -31,6 +23,13 @@ struct linkedList{
 	node_ptr tail;
 	int count;
 };
+
+void print_stack(Stack);
+
+Stack createStack(void);
+int push(Stack, void *);
+void *pop(Stack);
+
 
 void print_list(LinkedList);
 LinkedList createList(void);
