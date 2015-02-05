@@ -89,7 +89,7 @@ int indexOf(LinkedList list, void *item){
 
 void *deleteElementAt(LinkedList *list, int index){
 	int idx = 0;  node_ptr walker; Node *item = getNodeAt(*list, index);
-	if(list->count == 0 || index < 0 || index >= list->count) return NULL;
+	if(list->count == 0 || index < 0 || index >= list->count || list->head == NULL) return NULL;
 	index == 0 && list->count == 1 && (list->tail = NULL);
 	if(index == 0){
 		list->head = list->head->next;

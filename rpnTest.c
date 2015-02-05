@@ -2,6 +2,103 @@
 #include "rpn.h"
 
 
+void test_isNumber_returns_1_if_given_character_is_a_number(){
+	assert(isNumber('5') == 1);
+	assert(isNumber('0') == 1);
+}
+
+void test_isNumber_returns_0_if_given_character_is_a_not_a_number(){
+	assert(isNumber('#') == 0);
+	assert(isNumber('d') == 0);
+}
+
+void test_isOperator_gives_1_if_given_char_is_an_operator(){
+	assert(isOperator('+') ==1);
+	assert(isOperator('^') ==1);
+}
+
+void test_isOperator_returns_0_if_given_character_is_not_an_Operator(){
+	assert(isOperator('#') == 0);
+	assert(isOperator('S') == 0);
+	assert(isOperator('9') == 0);
+}
+
+void test_isSeperator_gives_1_when_whiteSpace_occurs_after_any_number(){
+	assert(isSeperator(' ',"43") == 1);
+}
+
+void test_isSeperator_gives_0_when_whiteSpace_doesnt_occur(){
+	assert(isSeperator('[',"r5") == 0);
+	assert(isSeperator('@'," ") == 0);
+}
+
+void test_pushNumber_pushes_given_string_into_stack_and_returns_1(){
+	Stack stack = createStack();
+	int num = 10; string str = "vikas";
+	assert(pushNumber(stack, &str, &num) == 1);
+	assert(memcmp((*stack.top)->data, str, strlen(str)) == 0);
+	assert(num==0);
+	free(str);
+}
+
+void test_pushNumber_gives_0_when_string_is_NULL_or_number_adrss_is_NULL(){
+	Stack stack = createStack();
+	int num = 10; string str = NULL, str1 = "hii";
+	assert(pushNumber(stack, &str, &num) == 0);
+	assert(pushNumber(stack, &str1, NULL) == 0);
+}
+
+void test_pushNumber_gives_0_when_string_is_empty_or_space(){
+	Stack stack = createStack();
+	int num = 10; string str = " ", str1 = "";
+	assert(pushNumber(stack, &str, &num) == 0);
+	assert(pushNumber(stack, &str1, &num) == 0);
+}
+
+void test_areOperatorsEnough_return_1_when_operators_are_enough_for_operands(){
+	assert(areOperatorsEnough("2 2 - 2 2 2 * 2 - - -") == 1);
+	assert(areOperatorsEnough("2 2 - 2 2 + 2 * 2 - - ") == 1);
+}
+
+void test_areOperatorsEnough_return_0_when_operators_are_not_enough_for_operands(){
+	assert(areOperatorsEnough("2 2 - 2 2 2 2-") == 0);
+	assert(areOperatorsEnough("2 2 - 2 2 + 2 * 2 ") == 0);
+}
+
+void test_operate_gives_result_of_two_numbers_according_to_the_operator(){
+	assertEqual(operate('+', "21", "3"),24);
+	assertEqual(operate('-', "21", "3"),18);
+	assertEqual(operate('*', "21", "3"),63);
+	assertEqual(operate('/', "21", "3"),7);
+}
+
+void test_storeChar_stores_given_number_char_in_given_string_at_given_index_and_increments_given_index_and_returns_1(){
+	string numbers = malloc(sizeof(char)); int i=0;
+	assert(storeChar(&numbers, &i, '5')==1);
+	assert(numbers[0]=='5');
+	assert(i==1); free(numbers);
+}
+
+void test_storeChar_doesnt_store_given_char_in_string_if_it_isnt_numChar_and_returns_0(){
+	string numbers = malloc(sizeof(char)); int i=0;
+	assert(storeChar(&numbers, &i, 'p')==0);
+	assert(storeChar(&numbers, &i, '\0')==0);
+	assert(i==0); free(numbers);
+}
+
+void test_storeChar_doesnt_store_given_char_in_string_when_given_string_is_NULL_and_returns_0(){
+	string numbers = NULL; int i=0;
+	assert(storeChar(&numbers, &i, '9')==0);
+	assert(i==0);
+}
+
+void test_popElementsAndPushResult_returns_0_when_char_operator_is_invalid(){
+	Stack stack = createStack();
+	string num1 = "4", num2 = "23", result, expected = "27";
+	push(stack, num1); push(stack, num2);
+	assert(popElementsAndPushResult(stack, &result, 0)==0);
+}
+
 void test_evaluate_returns_the_result_of_postfix_addition_5_for_2_and_3(){
 	Result result = evaluate("2 3 +");
 	assertEqual(result.status, 5);
@@ -125,7 +222,7 @@ void test_evaluate_returns_the_result_with_error_having_1_for_less_number_of_ope
 	assertEqual(result.error, 1);
 }
 
-void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression(){
-	string rpn_expression = infixToPostfix("3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3");
-	assert(rpn_expression == "3 4 2 * 1 5 - 2 3 ^ ^ / +");
-}
+// void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression(){
+// 	string rpn_expression = infixToPostfix("3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3");
+// 	assert(rpn_expression == "3 4 2 * 1 5 - 2 3 ^ ^ / +");
+// }

@@ -9,6 +9,7 @@ void test_createQueue_creates_an_empty_queue(){
 	assert(q.list->head == NULL);
 	assert(q.list->head == NULL);
 	assert(q.list->count == 0);
+	free(q.list);
 }
 
 void test_enque_adds_an_int_element_to_Queue_and_returns_number_of_elements_in_the_queue(){
@@ -36,6 +37,7 @@ void test_enque_adds_3_char_element_to_Queue_and_returns_number_of_elements_in_t
 	assert(q.list->head->data == &a);
 	assert(q.list->tail->data == &c);
 	assert(q.list->count == 3);
+	free(q.list);
 }
 
 void test_enque_adds_3_string_element_to_Queue_and_returns_number_of_elements_in_the_queue(){
@@ -52,6 +54,7 @@ void test_enque_adds_3_string_element_to_Queue_and_returns_number_of_elements_in
 	assertEqual(strcmp(q.list->tail->data, c), 0);
 	assert(q.list->head->next->data == b);
 	assert(q.list->count == 3);
+	free(q.list);
 }
 
 void test_deque_delets_the_last_element_from_the_queue(){
@@ -69,6 +72,7 @@ void test_deque_delets_the_last_element_from_the_queue(){
 	assert(q.list->head == NULL);
 	assert(q.list->tail == NULL);
 	assert((*q.front) == NULL);
+	free(q.list);
 }
 
 void test_deque_delets_the_last_element_from_the_double_queue(){
@@ -86,4 +90,5 @@ void test_deque_delets_the_last_element_from_the_double_queue(){
 	assert(q.list->head == NULL);
 	assert(q.list->tail == NULL);
 	assert((*q.front) == NULL);
+	free(q.list);
 }
