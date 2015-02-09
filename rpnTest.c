@@ -23,13 +23,13 @@ void test_isOperator_returns_0_if_given_character_is_not_an_Operator(){
 	assert(isOperator('9') == 0);
 }
 
-void test_isSeperator_gives_1_when_whiteSpace_occurs_after_any_number(){
-	assert(isSeperator(' ',"43") == 1);
+void test_isSeperator_after_number_gives_1_when_whiteSpace_occurs_after_any_number(){
+	assert(isSeperator_after_number(' ',"43") == 1);
 }
 
-void test_isSeperator_gives_0_when_whiteSpace_doesnt_occur(){
-	assert(isSeperator('[',"r5") == 0);
-	assert(isSeperator('@'," ") == 0);
+void test_isSeperator_after_number_gives_0_when_whiteSpace_doesnt_occur(){
+	assert(isSeperator_after_number('[',"r5") == 0);
+	assert(isSeperator_after_number('@'," ") == 0);
 }
 
 void test_pushNumber_pushes_given_string_into_stack_and_returns_1(){
@@ -222,7 +222,17 @@ void test_evaluate_returns_the_result_with_error_having_1_for_less_number_of_ope
 	assertEqual(result.error, 1);
 }
 
-// void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression(){
-// 	string rpn_expression = infixToPostfix("3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3");
-// 	assert(rpn_expression == "3 4 2 * 1 5 - 2 3 ^ ^ / +");
+void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression(){
+	string rpn_expression = infixToPostfix("3 + 4");
+	assertEqual(strcmp(rpn_expression, "3 4 +"),0);
+}
+
+void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_more_operators(){
+	string rpn_expression = infixToPostfix("2 - 4 + 1");
+	assertEqual(strcmp(rpn_expression, "2 4 1 + -"),0);
+}
+
+// void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_two_digits(){
+// 	string rpn_expression = infixToPostfix("35 + 4");
+// 	assertEqual(strcmp(rpn_expression, "35 4 +"),0);
 // }

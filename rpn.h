@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "stack.h"
+
+#include "que.h"
 typedef struct result Result;
 
 struct result {
@@ -12,7 +13,7 @@ struct result {
 
 int isNumber(char);
 int isOperator(char);
-int isSeperator(char, string);
+int isSeperator_after_number(char, string);
 int pushNumber(Stack, string*, int*);
 int popElementsAndPushResult(Stack stack, string *returnValue, char ch);
 int storeChar(string *number, int *j, char ch);

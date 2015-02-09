@@ -57,36 +57,34 @@ void test_enque_adds_3_string_element_to_Queue_and_returns_number_of_elements_in
 	free(q.list);
 }
 
-void test_deque_delets_the_last_element_from_the_queue(){
+void test_deque_delets_the_element_from_the_front_of_the_queue_and_returns_deleted_items_reference(){
 	char a = 'a', b = 'b', c='c';
 	Queue q = createQueue();
 	enque(q, &a); enque(q, &b); enque(q, &c);
 	assert(q.list->tail->data == &c);
-	deque(q);
+	assert(*(char*)deque(q) == a);
 	assert((*q.front)->data == &b);	
 	deque(q);
 
 	assert((*q.front)->data == &c);
 	assert(q.list->tail->data == &c);	
-	deque(q);
+	assert(*(char*)deque(q) == 'c');
 	assert(q.list->head == NULL);
 	assert(q.list->tail == NULL);
 	assert((*q.front) == NULL);
 	free(q.list);
 }
 
-void test_deque_delets_the_last_element_from_the_double_queue(){
-	double a = 23.5, b = 43.25, c=56.3;
+void test_deque_delets_the_last_element_from_queue_and_makes_list_head_tail_and_front_NULL(){
+	double a = 23.5;
 	Queue q = createQueue();
-	enque(q, &a); enque(q, &b); enque(q, &c);
-	assert(q.list->tail->data == &c);
-	deque(q);
-	assert((*q.front)->data == &b);	
-	deque(q);
+	enque(q, &a);
+	assert((*q.front)->data == &a);	
+	assert(q.list->head->data == &a);
+	assert(q.list->tail->data == &a);
+	assert(*(double*)((*q.front)->data) == 23.5);
+	assert(*(double*)deque(q) == a);
 
-	assert((*q.front)->data == &c);
-	assert(q.list->tail->data == &c);	
-	deque(q);
 	assert(q.list->head == NULL);
 	assert(q.list->tail == NULL);
 	assert((*q.front) == NULL);

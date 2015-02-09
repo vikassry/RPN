@@ -1,6 +1,5 @@
 #include "rpn.h"
 
-
 int operate(char operator, string operand1, string operand2){
 	int val1 = atoi(operand1), val2 = atoi(operand2), result ;
 	switch(operator){
@@ -33,7 +32,7 @@ char *toString (int value, char *result, int base){
 int isNumber(char ch){
 	return 48<=ch && ch <=57 ;
 }
-int isSeperator(char ch, string numbers){
+int isSeperator_after_number(char ch, string numbers){
 	return ch == ' '  && numbers[0]>='0' && numbers[0] <= '9';
 }
 int pushNumber(Stack stack, string *str, int *count){
@@ -89,7 +88,7 @@ Result evaluate(char *expr){
 	for(i=0; i<strlen(expr); i++){
 		isNumber(expr[i]) && storeChar(&numbers, &j, expr[i]);
 
-		isSeperator(expr[i], numbers) && pushNumber(stack, &numbers, &j);
+		isSeperator_after_number(expr[i], numbers) && pushNumber(stack, &numbers, &j);
 
 		isOperator(expr[i]) && popElementsAndPushResult(stack, &returnValue, expr[i]);
 	}
@@ -99,22 +98,50 @@ Result evaluate(char *expr){
 }
 
 
+int pushToQueue(Queue q, string *str, int *count){
+	char str1[1], str2[1];
+	strcpy(str1, ""); strcpy(str2," ");
+	if(*str==NULL || strcmp(*str, str1)==0 || count==NULL) return 0;
+	enque(q, *str);  *count = 0;
+	printf("%s\n",*str);
+	*str = (char*)calloc(1, sizeof(char));
+	strcpy(*str, " "); enque(q, *str);
+	*str = (char*)calloc(1, sizeof(char));
+	return 1;
+}
+
+int pushToStack(Stack s, string *str, int *count, char operator){
+	if(*str==NULL || count==NULL) return 0;
+	*str[0] = operator; 
+	push(s, *str);  *count = 0; 
+	*str = (char*)calloc(1, sizeof(char));
+	strcpy(*str, " ");  push(s, *str);
+	*str = (char*)calloc(1, sizeof(char));
+	return 1;
+}
+
+
 // 3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3
 char * infixToPostfix(char * expr){
-	string result = malloc(sizeof(char));
-	int i, j=0; Stack stack = createStack();
+	int i, j=0, tokens=0; 
+	Queue q = createQueue(); node_ptr walker;
+	string op;
+	Stack stack = createStack();
+	string numbers = malloc(sizeof(char)), result = malloc(sizeof(char)*strlen(expr));
+	
 	for(i=0; i<strlen(expr); i++){
-		if(isNumber(expr[i])){
-			result = (string)realloc(result, sizeof(char)*((j+1)));
-			result[j] = expr[i]; j++; 
-			result[j+1] = ' ';	j++;
-		}
-		if(isOperator(expr[i])){
-			push(stack, &expr[i]);
-		}
+		isNumber(expr[i]) && storeChar(&numbers, &j, expr[i]);
+
+		isSeperator_after_number(expr[i], numbers) && pushToQueue(q, &numbers, &j) && (tokens+=2);
+
+		(isOperator(expr[i])) && pushToStack(stack, &numbers, &j, expr[i]) && (tokens+=2);
+
+		isNumber(expr[i]) && i == strlen(expr)-1 && enque(q, &expr[i]) && tokens++;
 	}
-	// for(i=0; i<j; i++)
-	// 	// printf("<%c>\n",result[i]);
-	// print_stack(stack);
-	return NULL;
+	i=0;
+	for(walker=q.list->head; walker; walker=walker->next,i++)
+		result[i] = *(string)walker->data;
+	for(;(*stack.top) && i<strlen(expr);i++)
+		result[i] = *(string)pop(stack);
+	return result;
 }

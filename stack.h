@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+
 typedef struct stack Stack;
 typedef struct node Node;
 typedef Node* node_ptr;
@@ -43,3 +44,4 @@ int indexOf(LinkedList, void *);
 void * deleteElementAt(LinkedList *, int);
 int asArray(LinkedList, void **);
 LinkedList * filter(LinkedList, int_void);
+
