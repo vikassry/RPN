@@ -32,8 +32,8 @@ char *toString (int value, char *result, int base){
 int isNumber(char ch){
 	return 48<=ch && ch <=57 ;
 }
-int isSeperator_after_number(char ch, string numbers){
-	return ch == ' '  && numbers[0]>='0' && numbers[0] <= '9';
+int isSeperator_after_number(string numbers, string expr, int i){
+	return (expr[i] == ' ' && numbers[0]>='0' && numbers[0] <= '9') || (i==strlen(expr)-1 && expr[i]>='0' && expr[i] <= '9');
 }
 int pushNumber(Stack stack, string *str, int *count){
 	char str1[1], str2[1];
@@ -79,8 +79,9 @@ int areOperatorsEnough(string expr){
 
 
 Result evaluate(char *expr){
-	Result result = {0,0}; Stack stack = createStack();  
 	int i, j=0, finalResult;
+	Result result = {0,0}; 
+	Stack stack = createStack();  
 	string returnValue, numbers = malloc(sizeof(char));
 
 	if(!areOperatorsEnough(expr)) return (Result){1,0};
@@ -88,7 +89,7 @@ Result evaluate(char *expr){
 	for(i=0; i<strlen(expr); i++){
 		isNumber(expr[i]) && storeChar(&numbers, &j, expr[i]);
 
-		isSeperator_after_number(expr[i], numbers) && pushNumber(stack, &numbers, &j);
+		isSeperator_after_number(numbers, expr, i) && pushNumber(stack, &numbers, &j);
 
 		isOperator(expr[i]) && popElementsAndPushResult(stack, &returnValue, expr[i]);
 	}
@@ -98,13 +99,15 @@ Result evaluate(char *expr){
 }
 
 
-int pushToQueue(Queue q, string *str, int *count){
+int pushToQueue(Queue q, string *str, int *count, string expr, int i){
 	char str1[1], str2[1];
-	strcpy(str1, ""); strcpy(str2," ");
-	if(*str==NULL || strcmp(*str, str1)==0 || count==NULL) return 0;
+	if(*str==NULL || strcmp(*str, "")==0 || count==NULL) return 0;
+	if(i==strlen(expr)-1){
+		enque(q, *str);
+		return 1;	
+	}
 	enque(q, *str);  *count = 0;
-	printf("%s\n",*str);
-	*str = (char*)calloc(1, sizeof(char));
+	*str = (char*)malloc(sizeof(char));
 	strcpy(*str, " "); enque(q, *str);
 	*str = (char*)calloc(1, sizeof(char));
 	return 1;
@@ -112,10 +115,10 @@ int pushToQueue(Queue q, string *str, int *count){
 
 int pushToStack(Stack s, string *str, int *count, char operator){
 	if(*str==NULL || count==NULL) return 0;
-	*str[0] = operator; 
+	*str[0] = operator;
 	push(s, *str);  *count = 0; 
 	*str = (char*)calloc(1, sizeof(char));
-	strcpy(*str, " ");  push(s, *str);
+	strcpy(*str, " "); push(s, *str);
 	*str = (char*)calloc(1, sizeof(char));
 	return 1;
 }
@@ -125,23 +128,21 @@ int pushToStack(Stack s, string *str, int *count, char operator){
 char * infixToPostfix(char * expr){
 	int i, j=0, tokens=0; 
 	Queue q = createQueue(); node_ptr walker;
-	string op;
 	Stack stack = createStack();
-	string numbers = malloc(sizeof(char)), result = malloc(sizeof(char)*strlen(expr));
+	string numbers = malloc(sizeof(char)), result = malloc(sizeof(char)*(strlen(expr)+1));
 	
 	for(i=0; i<strlen(expr); i++){
 		isNumber(expr[i]) && storeChar(&numbers, &j, expr[i]);
 
-		isSeperator_after_number(expr[i], numbers) && pushToQueue(q, &numbers, &j) && (tokens+=2);
+		isSeperator_after_number(numbers, expr, i) && pushToQueue(q, &numbers, &j, expr, i) && (tokens+=2);
 
 		(isOperator(expr[i])) && pushToStack(stack, &numbers, &j, expr[i]) && (tokens+=2);
-
-		isNumber(expr[i]) && i == strlen(expr)-1 && enque(q, &expr[i]) && tokens++;
 	}
-	i=0;
-	for(walker=q.list->head; walker; walker=walker->next,i++)
-		result[i] = *(string)walker->data;
-	for(;(*stack.top) && i<strlen(expr);i++)
-		result[i] = *(string)pop(stack);
+	for(walker=q.list->head; walker; walker=walker->next)
+		strcat(result,(string)walker->data);
+	for(;(*stack.top);)
+		strcat(result,(string)pop(stack));
+
+	free(numbers);
 	return result;
 }

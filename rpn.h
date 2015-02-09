@@ -13,7 +13,7 @@ struct result {
 
 int isNumber(char);
 int isOperator(char);
-int isSeperator_after_number(char, string);
+int isSeperator_after_number(string, string, int);
 int pushNumber(Stack, string*, int*);
 int popElementsAndPushResult(Stack stack, string *returnValue, char ch);
 int storeChar(string *number, int *j, char ch);

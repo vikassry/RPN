@@ -24,12 +24,23 @@ void test_isOperator_returns_0_if_given_character_is_not_an_Operator(){
 }
 
 void test_isSeperator_after_number_gives_1_when_whiteSpace_occurs_after_any_number(){
-	assert(isSeperator_after_number(' ',"43") == 1);
+	string expr = "23 ";
+	assert(isSeperator_after_number("43",expr,2) == 1);
 }
 
 void test_isSeperator_after_number_gives_0_when_whiteSpace_doesnt_occur(){
-	assert(isSeperator_after_number('[',"r5") == 0);
-	assert(isSeperator_after_number('@'," ") == 0);
+	string expr = "4r[";
+	assert(isSeperator_after_number("r5",expr,2) == 0);
+}
+
+void test_isSeperator_after_number_gives_0_when_other_than_whiteSpace_occurs(){
+	string expr = "14 [";
+	assert(isSeperator_after_number("@4",expr,3) == 0);
+}
+
+void test_isSeperator_returns_1_when_number_is_at_the_end_of_the_string(){
+	string expr = "2 34";
+	assert(isSeperator_after_number("34",expr,3) == 1);
 }
 
 void test_pushNumber_pushes_given_string_into_stack_and_returns_1(){
@@ -222,17 +233,40 @@ void test_evaluate_returns_the_result_with_error_having_1_for_less_number_of_ope
 	assertEqual(result.error, 1);
 }
 
-void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression(){
+void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_for_single_digit(){
 	string rpn_expression = infixToPostfix("3 + 4");
+	printf("%s\n",rpn_expression);
+
 	assertEqual(strcmp(rpn_expression, "3 4 +"),0);
+	free(rpn_expression);
 }
 
-void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_more_operators(){
+void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_more_numbers(){
 	string rpn_expression = infixToPostfix("2 - 4 + 1");
+	printf("%s\n",rpn_expression);
+
 	assertEqual(strcmp(rpn_expression, "2 4 1 + -"),0);
+	free(rpn_expression);
 }
 
-// void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_two_digits(){
-// 	string rpn_expression = infixToPostfix("35 + 4");
-// 	assertEqual(strcmp(rpn_expression, "35 4 +"),0);
-// }
+void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_two_digit_number(){
+	string rpn_expression = infixToPostfix("35 + 4");
+	printf("%s\n",rpn_expression);
+
+	assertEqual(strcmp(rpn_expression, "35 4 +"),0);
+	free(rpn_expression);
+}
+
+void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_two_digits_with_multiple_numbers(){
+	string rpn_expression = infixToPostfix("50 + 4 - 19");
+	printf("%s\n",rpn_expression);
+	assertEqual(strcmp(rpn_expression, "50 4 19 - +"),0);
+	free(rpn_expression);
+}
+
+void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_five_digits_with_multiple_numbers(){
+	string rpn_expression = infixToPostfix("1234 + 432 - 12345");
+	printf("%s\n",rpn_expression);
+	assertEqual(strcmp(rpn_expression, "1234 432 12345 - +"),0);
+	free(rpn_expression);
+}
