@@ -7,7 +7,7 @@ typedef Node* node_ptr;
 typedef struct linkedList LinkedList;
 typedef LinkedList* list_ptr;
 typedef int(*int_void)(void*);
-typedef char* string;
+typedef char* String;
 
 struct stack{
 	LinkedList *list;
@@ -44,4 +44,3 @@ int indexOf(LinkedList, void *);
 void * deleteElementAt(LinkedList *, int);
 int asArray(LinkedList, void **);
 LinkedList * filter(LinkedList, int_void);
-

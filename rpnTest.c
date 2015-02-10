@@ -24,28 +24,28 @@ void test_isOperator_returns_0_if_given_character_is_not_an_Operator(){
 }
 
 void test_isSeperator_after_number_gives_1_when_whiteSpace_occurs_after_any_number(){
-	string expr = "23 ";
+	String expr = "23 ";
 	assert(isSeperator_after_number("43",expr,2) == 1);
 }
 
 void test_isSeperator_after_number_gives_0_when_whiteSpace_doesnt_occur(){
-	string expr = "4r[";
+	String expr = "4r[";
 	assert(isSeperator_after_number("r5",expr,2) == 0);
 }
 
 void test_isSeperator_after_number_gives_0_when_other_than_whiteSpace_occurs(){
-	string expr = "14 [";
+	String expr = "14 [";
 	assert(isSeperator_after_number("@4",expr,3) == 0);
 }
 
 void test_isSeperator_returns_1_when_number_is_at_the_end_of_the_string(){
-	string expr = "2 34";
+	String expr = "2 34";
 	assert(isSeperator_after_number("34",expr,3) == 1);
 }
 
 void test_pushNumber_pushes_given_string_into_stack_and_returns_1(){
 	Stack stack = createStack();
-	int num = 10; string str = "vikas";
+	int num = 10; String str = "vikas";
 	assert(pushNumber(stack, &str, &num) == 1);
 	assert(memcmp((*stack.top)->data, str, strlen(str)) == 0);
 	assert(num==0);
@@ -54,14 +54,14 @@ void test_pushNumber_pushes_given_string_into_stack_and_returns_1(){
 
 void test_pushNumber_gives_0_when_string_is_NULL_or_number_adrss_is_NULL(){
 	Stack stack = createStack();
-	int num = 10; string str = NULL, str1 = "hii";
+	int num = 10; String str = NULL, str1 = "hii";
 	assert(pushNumber(stack, &str, &num) == 0);
 	assert(pushNumber(stack, &str1, NULL) == 0);
 }
 
 void test_pushNumber_gives_0_when_string_is_empty_or_space(){
 	Stack stack = createStack();
-	int num = 10; string str = " ", str1 = "";
+	int num = 10; String str = " ", str1 = "";
 	assert(pushNumber(stack, &str, &num) == 0);
 	assert(pushNumber(stack, &str1, &num) == 0);
 }
@@ -84,28 +84,28 @@ void test_operate_gives_result_of_two_numbers_according_to_the_operator(){
 }
 
 void test_storeChar_stores_given_number_char_in_given_string_at_given_index_and_increments_given_index_and_returns_1(){
-	string numbers = malloc(sizeof(char)); int i=0;
+	String numbers = malloc(sizeof(char)); int i=0;
 	assert(storeChar(&numbers, &i, '5')==1);
 	assert(numbers[0]=='5');
 	assert(i==1); free(numbers);
 }
 
 void test_storeChar_doesnt_store_given_char_in_string_if_it_isnt_numChar_and_returns_0(){
-	string numbers = malloc(sizeof(char)); int i=0;
+	String numbers = malloc(sizeof(char)); int i=0;
 	assert(storeChar(&numbers, &i, 'p')==0);
 	assert(storeChar(&numbers, &i, '\0')==0);
 	assert(i==0); free(numbers);
 }
 
 void test_storeChar_doesnt_store_given_char_in_string_when_given_string_is_NULL_and_returns_0(){
-	string numbers = NULL; int i=0;
+	String numbers = NULL; int i=0;
 	assert(storeChar(&numbers, &i, '9')==0);
 	assert(i==0);
 }
 
 void test_popElementsAndPushResult_returns_0_when_char_operator_is_invalid(){
 	Stack stack = createStack();
-	string num1 = "4", num2 = "23", result, expected = "27";
+	String num1 = "4", num2 = "23", result, expected = "27";
 	push(stack, num1); push(stack, num2);
 	assert(popElementsAndPushResult(stack, &result, 0)==0);
 }
@@ -234,31 +234,49 @@ void test_evaluate_returns_the_result_with_error_having_1_for_less_number_of_ope
 }
 
 void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_for_single_digit(){
-	string rpn_expression = infixToPostfix("3 + 4");
+	String rpn_expression = infixToPostfix("3 + 4");
 	assertEqual(strcmp(rpn_expression, "3 4 +"),0);
 	free(rpn_expression);
 }
 
 void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_more_numbers(){
-	string rpn_expression = infixToPostfix("2 - 4 + 1");
-	assertEqual(strcmp(rpn_expression, "2 4 1 + -"),0);
+	String rpn_expression = infixToPostfix("2 - 4 + 1");
+	assertEqual(strcmp(rpn_expression, "2 4 - 1 +"),0);
 	free(rpn_expression);
 }
 
 void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_two_digit_number(){
-	string rpn_expression = infixToPostfix("35 + 4");
+	String rpn_expression = infixToPostfix("35 + 4");
 	assertEqual(strcmp(rpn_expression, "35 4 +"),0);
 	free(rpn_expression);
 }
 
 void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_two_digits_with_multiple_numbers(){
-	string rpn_expression = infixToPostfix("50 + 4 - 19");
-	assertEqual(strcmp(rpn_expression, "50 4 19 - +"),0);
+	String rpn_expression = infixToPostfix("50 + 4 - 19");
+	assertEqual(strcmp(rpn_expression, "50 4 + 19 -"),0);
 	free(rpn_expression);
 }
 
 void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_five_digits_with_multiple_numbers(){
-	string rpn_expression = infixToPostfix("1234 + 432 - 12345");
-	assertEqual(strcmp(rpn_expression, "1234 432 12345 - +"),0);
+	String rpn_expression = infixToPostfix("1234 + 432 - 12345");
+	assertEqual(strcmp(rpn_expression, "1234 432 + 12345 -"),0);
+	free(rpn_expression);
+}
+
+void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_five_digits_with_multiple_numbers_with_precedence(){
+	String rpn_expression = infixToPostfix("1234 - 432 * 12345");
+	assertEqual(strcmp(rpn_expression, "1234 432 12345 * -"),0);
+	free(rpn_expression);
+}
+
+void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_two_digits_with_precedence(){
+	String rpn_expression = infixToPostfix("50 / 4 - 19");
+	assertEqual(strcmp(rpn_expression, "50 4 / 19 -"),0);
+	free(rpn_expression);
+}
+
+void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_mixed_digits_with_precedence(){
+	String rpn_expression = infixToPostfix("125 ^ 14 * 9");
+	assertEqual(strcmp(rpn_expression, "125 14 ^ 9 *"),0);
 	free(rpn_expression);
 }

@@ -13,12 +13,12 @@ struct result {
 
 int isNumber(char);
 int isOperator(char);
-int isSeperator_after_number(string, string, int);
-int pushNumber(Stack, string*, int*);
-int popElementsAndPushResult(Stack stack, string *returnValue, char ch);
-int storeChar(string *number, int *j, char ch);
-int areOperatorsEnough(string expr);
-int operate(char, string, string);
+int isSeperator_after_number(String, String, int);
+int pushNumber(Stack, String*, int*);
+int popElementsAndPushResult(Stack stack, String *returnValue, char ch);
+int storeChar(String *number, int *j, char ch);	
+int areOperatorsEnough(String expr);
+int operate(char, String, String);
 
 Result evaluate(char * expression);
 char * infixToPostfix(char * expression);

@@ -13,3 +13,7 @@ spike.o
 spike.c
 spike.exe
 spike.exe.core
+queTestRunner.exe
+strcat.c
+strcat.exe
+strcat.exe.core

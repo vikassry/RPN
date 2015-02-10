@@ -41,7 +41,7 @@ void test_enque_adds_3_char_element_to_Queue_and_returns_number_of_elements_in_t
 }
 
 void test_enque_adds_3_string_element_to_Queue_and_returns_number_of_elements_in_the_queue(){
-	string a = malloc(sizeof(char)*10), b = malloc(sizeof(char)*10), c=malloc(sizeof(char)*10); 
+	String a = malloc(sizeof(char)*10), b = malloc(sizeof(char)*10), c=malloc(sizeof(char)*10); 
 	Queue q = createQueue();
 	strcpy(a,"asdzdczdcd"); strcpy(b,"wdcdcswwq"); strcpy(c,"jsdiksjdeq");
 	enque(q, a); enque(q, b); enque(q, c);
