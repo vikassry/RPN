@@ -235,38 +235,30 @@ void test_evaluate_returns_the_result_with_error_having_1_for_less_number_of_ope
 
 void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_for_single_digit(){
 	string rpn_expression = infixToPostfix("3 + 4");
-	printf("%s\n",rpn_expression);
-
 	assertEqual(strcmp(rpn_expression, "3 4 +"),0);
 	free(rpn_expression);
 }
 
 void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_more_numbers(){
 	string rpn_expression = infixToPostfix("2 - 4 + 1");
-	printf("%s\n",rpn_expression);
-
 	assertEqual(strcmp(rpn_expression, "2 4 1 + -"),0);
 	free(rpn_expression);
 }
 
 void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_two_digit_number(){
 	string rpn_expression = infixToPostfix("35 + 4");
-	printf("%s\n",rpn_expression);
-
 	assertEqual(strcmp(rpn_expression, "35 4 +"),0);
 	free(rpn_expression);
 }
 
 void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_two_digits_with_multiple_numbers(){
 	string rpn_expression = infixToPostfix("50 + 4 - 19");
-	printf("%s\n",rpn_expression);
 	assertEqual(strcmp(rpn_expression, "50 4 19 - +"),0);
 	free(rpn_expression);
 }
 
 void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_with_five_digits_with_multiple_numbers(){
 	string rpn_expression = infixToPostfix("1234 + 432 - 12345");
-	printf("%s\n",rpn_expression);
 	assertEqual(strcmp(rpn_expression, "1234 432 12345 - +"),0);
 	free(rpn_expression);
 }

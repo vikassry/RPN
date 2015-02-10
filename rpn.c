@@ -1,4 +1,5 @@
 #include "rpn.h"
+#include "math.h"
 
 int operate(char operator, string operand1, string operand2){
 	int val1 = atoi(operand1), val2 = atoi(operand2), result ;
@@ -7,6 +8,7 @@ int operate(char operator, string operand1, string operand2){
 		case '-': result = val1 - val2; break;
 		case '*': result = val1 * val2; break;
 		case '/': result = val1 / val2; break;
+		case '^': result = pow(val1,val2); break;
 		default : printf(" Wrong operator");
 	}
 	return result ;
@@ -103,10 +105,9 @@ int pushToQueue(Queue q, string *str, int *count, string expr, int i){
 	char str1[1], str2[1];
 	if(*str==NULL || strcmp(*str, "")==0 || count==NULL) return 0;
 	if(i==strlen(expr)-1){
-		enque(q, *str);
-		return 1;	
+		enque(q, *str); return 1;	
 	}
-	enque(q, *str);  *count = 0;
+	enque(q, *str); *count = 0;
 	*str = (char*)malloc(sizeof(char));
 	strcpy(*str, " "); enque(q, *str);
 	*str = (char*)calloc(1, sizeof(char));
@@ -118,31 +119,33 @@ int pushToStack(Stack s, string *str, int *count, char operator){
 	*str[0] = operator;
 	push(s, *str);  *count = 0; 
 	*str = (char*)calloc(1, sizeof(char));
-	strcpy(*str, " "); push(s, *str);
-	*str = (char*)calloc(1, sizeof(char));
 	return 1;
 }
 
+void copyToPostfix(Queue q, Stack s, string result){
+	node_ptr walker;
+	for(walker=q.list->head; walker; walker=walker->next)
+		strcat(result,(string)walker->data);
+	for(;*s.top;){
+		strcat(result," "); strcat(result,pop(s));
+	}
+}
 
 // 3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3
 char * infixToPostfix(char * expr){
-	int i, j=0, tokens=0; 
-	Queue q = createQueue(); node_ptr walker;
-	Stack stack = createStack();
-	string numbers = malloc(sizeof(char)), result = malloc(sizeof(char)*(strlen(expr)+1));
+	int i, j=0;
+	Stack stack = createStack(); Queue q = createQueue(); 
+	string numbers = malloc(sizeof(char)); 
+	string result = (string)malloc(sizeof(char)*(strlen(expr)+1));
 	
 	for(i=0; i<strlen(expr); i++){
 		isNumber(expr[i]) && storeChar(&numbers, &j, expr[i]);
 
-		isSeperator_after_number(numbers, expr, i) && pushToQueue(q, &numbers, &j, expr, i) && (tokens+=2);
+		isSeperator_after_number(numbers, expr, i) && pushToQueue(q, &numbers, &j, expr, i);
 
-		(isOperator(expr[i])) && pushToStack(stack, &numbers, &j, expr[i]) && (tokens+=2);
+		(isOperator(expr[i])) && pushToStack(stack, &numbers, &j, expr[i]);
 	}
-	for(walker=q.list->head; walker; walker=walker->next)
-		strcat(result,(string)walker->data);
-	for(;(*stack.top);)
-		strcat(result,(string)pop(stack));
-
+	copyToPostfix(q,stack,result);
 	free(numbers);
 	return result;
 }
