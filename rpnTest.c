@@ -305,8 +305,32 @@ void test_infixToPostfix_returns_rpn_expression_with_complex_infix_exprssn_with_
 	free(rpn_expression);
 }
 
-void test_infixToPostfix_returns_rpn_expression_with_complex_infix_exprssion(){
-	String rpn_expression = infixToPostfix("3 + 4 * 2 / 1 - 5 ^ 2 ^ 3");
-	assertEqual(strcmp(rpn_expression, "3 4 2 * 1 / + 5 2 ^ 3 ^ -"),0);
+void test_infixToPostfix_returns_rpn_expression_with_simple_infix_exprssion_with_parenthises(){
+	String rpn_expression = infixToPostfix(" 2 + ( 10 + 5 ) + 4");
+	assertEqual(strcmp(rpn_expression, "2 10 5 + + 4 +"),0);
+	free(rpn_expression);
+}
+
+void test_infixToPostfix_returns_rpn_expression_from_infix_exprssion_with_parenthises(){
+	String rpn_expression = infixToPostfix("3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3");
+	assertEqual(strcmp(rpn_expression, "3 4 2 * 1 5 - 2 ^ 3 ^ / +"),0);
+	free(rpn_expression);
+}
+
+void test_infixToPostfix_returns_rpn_expression_from_complex_infix_exprssion_with_precedence_within_parenthises(){
+	String rpn_expression = infixToPostfix("123456 - 4321 + ( 120 * 49 / 7 - 12345 ) ^ 3 + 11");
+	assertEqual(strcmp(rpn_expression, "123456 4321 - 120 49 * 7 / 12345 - 3 ^ + 11 +"),0);
+	free(rpn_expression);
+}
+
+void test_infixToPostfix_returns_rpn_expression_from_complex_infix_exprssion_with_precedence_within_multiple_parenthises(){
+	String rpn_expression = infixToPostfix("123 - 41 + ( 12 * ( 9 / 7 ) - 12 + ( 9 * 30 ) ) ^ 2 + 10");
+	assertEqual(strcmp(rpn_expression, "123 41 - 12 9 7 / * 12 - 9 30 * + 2 ^ + 10 +"),0);
+	free(rpn_expression);
+}
+
+void test_infixToPostfix_returns_rpn_expression_from_complex_infix_exprssion_with_precedence_within_nested_parenthises(){
+	String rpn_expression = infixToPostfix("1234 - 67 + ( 124 * ( 49 / 7 - 12 + ( 9 * 30 - 14 ) - ( 1 / 1 ) ) + 0 ) ^ 2 + 10");
+	assertEqual(strcmp(rpn_expression, "1234 67 - 124 49 7 / 12 - 9 30 * 14 - + 1 1 / - * 0 + 2 ^ + 10 +"),0);
 	free(rpn_expression);
 }
