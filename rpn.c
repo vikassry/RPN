@@ -1,6 +1,7 @@
 #include "rpn.h"
 #include "math.h"
 
+
 int operate(char operator, String operand1, String operand2){
 	int val1 = atoi(operand1), val2 = atoi(operand2), result ;
 	switch(operator){
@@ -57,8 +58,10 @@ int isOperator(char ch){
 int storeChar(String *number, int *j, char ch){
 	int i = *j;
 	if(*number == NULL || ch == '\0' || !isNumber(ch)) return 0;
-	*number = (String)realloc(*number, sizeof(char)*(i+1));
+	*number = (String)realloc(*number, sizeof(char)*(i+2));
+
 	(*number)[i] = ch; i++; *j = i;
+	(*number)[i] = '\0';
 	return 1; 
 }
 
@@ -100,6 +103,7 @@ Result evaluate(char *expr){
 	return result;
 }
 
+//-----------------------------------------------------------------------------------------------------
 
 int pushToQueue(Queue q, String *str, int *count, String expr, int i){
 	char str1[1], str2[1];
@@ -115,14 +119,10 @@ int pushToQueue(Queue q, String *str, int *count, String expr, int i){
 }
 
 int precedenceOf(char operator){
-	int precedence;
-	switch(operator){
-		case '^' : precedence = 3; break;
-		case '*' : precedence = 2; break;
-		case '/' : precedence = 2; break;
-		case '+' : precedence = 1; break;
-		case '-' : precedence = 1; break;	
-	}
+	int precedence;	
+	operator == '^' && (precedence = 3);
+	(operator == '/' || operator == '*') && (precedence = 2);
+	(operator == '+' || operator == '-') && (precedence = 1);
 	return precedence;
 }
 
@@ -130,24 +130,27 @@ char topOfStack(Stack s){
 	return *(char*)(*s.top)->data;
 }
 
-void pushToQueAndstack(String *str, Stack s, Queue q, char operator){
+void sendToQ(Queue q, String *str, char token){
 	*str = (char*)calloc(1, sizeof(char));
-	*str[0] = *(char*)pop(s) ;
+	*str[0] = token;
 	enque(q, *str);
-
+}
+void sendToStack(Stack s, String *str, char token){
 	*str = (char*)calloc(1, sizeof(char));
-	*str = " ";
-	enque(q, *str);
-	
-	*str = (char*)calloc(1, sizeof(char));
-	*str[0] = operator;
+	*str[0] = token;
 	push(s, *str);
 }
 
+void pushToQueAndstack(String *str, Stack s, Queue q, char operator){
+	while(*s.top !=NULL && precedenceOf(operator) <= precedenceOf(topOfStack(s))){
+		sendToQ(q, str, *(char*)pop(s));
+		sendToQ(q, str, ' ');
+	}
+	sendToStack(s, str, operator);
+}
+
 void takeCareOfPrecedence(Stack s, Queue q, String *str, int *count, char operator){
-	if((*s.top) && precedenceOf(operator) > precedenceOf(topOfStack(s)))
-		push(s, *str);
-	else if((*s.top) && precedenceOf(operator) <= precedenceOf(topOfStack(s)))
+	if((*s.top) && precedenceOf(operator) <= precedenceOf(topOfStack(s)))
 		pushToQueAndstack(str, s, q, operator);
 	else push(s, *str);
 	*count = 0;
@@ -162,7 +165,7 @@ int pushToStack(Stack s, Queue q, String *str, int *count, char operator){
 }
 
 void copyToPostfixString(Queue q, Stack s, String result){
-	node_ptr walker; int i;
+	node_ptr walker;
 	for(walker=q.list->head; walker; walker=walker->next)
 		strcat(result,(String)walker->data);
 	for(;*s.top;){
@@ -175,7 +178,7 @@ char * infixToPostfix(char * expr){
 	int i, j=0;
 	Stack stack = createStack(); Queue q = createQueue(); 
 	String numbers = malloc(sizeof(char)); 
-	String result = (String)malloc(sizeof(char)*(strlen(expr)+1));
+	String result = (String)calloc(sizeof(char),(strlen(expr))+1);
 	
 	for(i=0; i<strlen(expr); i++){
 		isNumber(expr[i]) && storeChar(&numbers, &j, expr[i]);
@@ -185,6 +188,6 @@ char * infixToPostfix(char * expr){
 		(isOperator(expr[i])) && pushToStack(stack, q, &numbers, &j, expr[i]);
 	}
 	copyToPostfixString(q,stack,result);
-	free(numbers);
+	free(numbers); free(stack.list); free(q.list);
 	return result;
 }
