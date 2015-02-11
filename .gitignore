@@ -16,4 +16,6 @@ spike.exe.core
 queTestRunner.exe
 strcat.c
 strcat.exe
-strcat.exe.core
+strcat.exe.corequeTestRunner.c
+queTest.o
+queTest.c

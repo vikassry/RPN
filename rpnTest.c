@@ -435,7 +435,6 @@ void test_evaluate_gives_answer_of_simple_rpn_expression_converted_by_infixToPos
 	free(rpn_expression);
 }
 
-
 void test_evaluate_gives_answer_of_rpn_expression_converted_by_my_infixToPostfix(){
 	String rpn_expression = infixToPostfix("123 - 41 + ( 12 * ( 9 / 7 ) - 12 + ( 9 * 30 ) ) ^ 1 + 10");
 	assertEqual(strcmp(rpn_expression, "123 41 - 12 9 7 / * 12 - 9 30 * + 1 ^ + 10 +"),0);

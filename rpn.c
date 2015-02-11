@@ -1,7 +1,6 @@
 #include "rpn.h"
 #include "math.h"
 
-
 int operate(char operator, String operand1, String operand2){
 	int val1 = atoi(operand1), val2 = atoi(operand2), result ;
 	switch(operator){
@@ -11,7 +10,7 @@ int operate(char operator, String operand1, String operand2){
 		case '/': result = val1 / val2; break;
 		case '^': result = pow(val1,val2); break;
 		default : printf(" Wrong operator");
-	}
+	} 
 	return result ;
 }
 
@@ -107,8 +106,7 @@ Result evaluate(char *expr){
 int pushToQueue(Queue q, String *str, int *count, String expr, int i){
 	if(*str==NULL || strcmp(*str, "")==0 || count==NULL) return 0;
 	if(i==strlen(expr)-1){
-		enque(q, *str); 
-		return 1;
+		enque(q, *str); return 1;
 	} 
 	enque(q, *str); *count = 0;
 	*str = (char*)malloc(sizeof(char));
@@ -124,7 +122,6 @@ int precedenceOf(char operator){
 	(operator == '+' || operator == '-') && (precedence = 1);
 	return precedence;
 }
-
 char topOfStack(Stack s){
 	return (*s.top) ? *(char*)(*s.top)->data : '\0';
 }
@@ -135,6 +132,7 @@ void sendToQ(Queue q, String *str, char token){
 	enque(q, *str);
 	*str = (char*)calloc(1, sizeof(char));
 }
+
 int sendToStack(Stack s, String *str, char token){
 	if(!*str || token == '\0') return 0;
 	*str = (char*)calloc(1, sizeof(char));
@@ -143,24 +141,22 @@ int sendToStack(Stack s, String *str, char token){
 	*str = (char*)calloc(1, sizeof(char));
 	return 1;
 }
-
 void takeCareOfPrecedence(Stack s, Queue q, String *str, char operator){
 	while(*s.top !=NULL && precedenceOf(operator) <= precedenceOf(topOfStack(s)) && topOfStack(s)!='('){
 		sendToQ(q, str, *(char*)pop(s));
 		sendToQ(q, str, ' ');
-	}
+	} 
 	sendToStack(s, str, operator);
-	*str = (char*)calloc(1, sizeof(char));
 }
 
 int pushToStack(Stack s, Queue q, String *str, char operator){
 	if(*str==NULL) return 0;
-	*str[0] = operator;
+	(*str)[0] = operator;
 	takeCareOfPrecedence(s, q, str, operator);
 	return 1;
 }
 
-int handleParentheses(Stack s, Queue q, String *str){
+int popUntilOpeningParenthesisFound(Stack s, Queue q, String *str){
 	if(!*s.top || !*str) return 0;
 	while(*s.top && topOfStack(s) != '('){
 		sendToQ(q, str,*(char*)pop(s));
@@ -169,18 +165,17 @@ int handleParentheses(Stack s, Queue q, String *str){
 	return 1;
 }
 
-void takeCareOfParentheses(Stack s, Queue q, String *numbers, char token){
+void handleParenthesis(Stack s, Queue q, String *numbers, char token){
 	token == '(' && sendToStack(s, numbers, token);
-	token == ')' && handleParentheses(s, q, numbers);
+	token == ')' && popUntilOpeningParenthesisFound(s, q, numbers);
 }
 
 void copyToPostfixString(Queue q, Stack s, String result){
 	node_ptr walker;
 	for(walker=q.list->head; walker; walker=walker->next)
 		strcat(result,(String)walker->data);
-	for(;*s.top;){
-		strcat(result," "); strcat(result,pop(s));
-	}
+	for(;*s.top;)
+		strcat(result," ") && strcat(result,pop(s));
 }
 
 
@@ -195,9 +190,9 @@ char * infixToPostfix(char * expr){
 
 		isSeperator_after_number(numbers, expr, i) && pushToQueue(q, &numbers, &j, expr, i);
 
-		isOperator(expr[i])&& pushToStack(stack, q, &numbers, expr[i]);
+		isOperator(expr[i]) && pushToStack(stack, q, &numbers, expr[i]);
 
-		takeCareOfParentheses(stack, q, &numbers, expr[i]);
+		handleParenthesis(stack, q, &numbers, expr[i]);
 	}
 	copyToPostfixString(q,stack,result);
 	free(numbers); free(stack.list); free(q.list);
