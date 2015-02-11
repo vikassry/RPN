@@ -19,6 +19,12 @@ int popElementsAndPushResult(Stack stack, String *returnValue, char ch);
 int storeChar(String *number, int *j, char ch);	
 int areOperatorsEnough(String expr);
 int operate(char, String, String);
+int precedenceOf(char);
+int pushToQueue(Queue, String*, int*, String, int);
+char topOfStack(Stack);
+void sendToQ(Queue, String*, char);
+int sendToStack(Stack, String*, char);
+void copyToPostfixString(Queue, Stack, String);
 
 Result evaluate(char * expression);
 char * infixToPostfix(char * expression);

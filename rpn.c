@@ -125,12 +125,8 @@ int precedenceOf(char operator){
 	return precedence;
 }
 
-int isParenthes(char ch){
-	return ch == '(';
-}
-	
 char topOfStack(Stack s){
-	return *(char*)(*s.top)->data;
+	return (*s.top) ? *(char*)(*s.top)->data : '\0';
 }
 
 void sendToQ(Queue q, String *str, char token){
@@ -138,7 +134,6 @@ void sendToQ(Queue q, String *str, char token){
 	(*str)[0] = token;
 	enque(q, *str);
 	*str = (char*)calloc(1, sizeof(char));
-
 }
 int sendToStack(Stack s, String *str, char token){
 	if(!*str || token == '\0') return 0;
@@ -150,10 +145,8 @@ int sendToStack(Stack s, String *str, char token){
 }
 
 void takeCareOfPrecedence(Stack s, Queue q, String *str, char operator){
-	char token;
 	while(*s.top !=NULL && precedenceOf(operator) <= precedenceOf(topOfStack(s)) && topOfStack(s)!='('){
-		token=*(char*)pop(s);
-		sendToQ(q, str, token);
+		sendToQ(q, str, *(char*)pop(s));
 		sendToQ(q, str, ' ');
 	}
 	sendToStack(s, str, operator);
@@ -190,7 +183,7 @@ void copyToPostfixString(Queue q, Stack s, String result){
 	}
 }
 
-// 3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3
+
 char * infixToPostfix(char * expr){
 	int i, j=0;
 	Stack stack = createStack(); Queue q = createQueue(); 
