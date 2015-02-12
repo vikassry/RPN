@@ -239,7 +239,7 @@ void test_pushToQueue_enques_given_string_with_a_space_in_given_queue_and_return
 	assert(i==0);
 	assertEqual(strcmp(q.list->head->data,"v"),0);
 	assert(strcmp(q.list->tail->data, " ")== 0);
-	assert(strcmp(name, " ")!=0 == 1); 
+	assertEqual(strcmp(name, " "), 0); 
 	free(q.list);
 }
 
@@ -311,12 +311,13 @@ void test_sendToStack_doesnt_enque_char_in_given_queue_and_returns_0_when_given_
 
 void test_copyToPostfixString_copies_the_queue_and_stack_data_in_postfix_form_to_a_given_string(){
 	String ch1="A", ch2=" ", ch3="B", ch4=" ", ch5="+", ch6="C", ch7="D", ch8="*";
-	Queue q = createQueue(); Stack s = createStack(); int i;
+	Queue q = createQueue(); Stack s = createStack();
 	String result = calloc(7, sizeof(char));
 	enque(q, ch1); enque(q, ch2); enque(q, ch3); enque(q, ch4); enque(q, ch5); 
 	push(s, ch8); push(s, ch7); push(s, ch6);
 	copyToPostfixString(q, s, result);
 	assertEqual(strcmp(result, "A B + C D *"),0);
+	free(q.list); free(s.list);
 }
 
 void test_infixToPostfix_returns_the_rpn_expression_from_given_infix_expression_for_single_digit(){
@@ -391,6 +392,33 @@ void test_infixToPostfix_returns_rpn_expression_with_complex_infix_exprssn_with_
 	free(rpn_expression);
 }
 
+void test_popOutToQ_moves_stack_top_to_que(){
+	Queue q = createQueue();
+	Stack s = createStack();
+	String s1="+", s2="(", operator;
+	push(s, s1); push(s, s2);
+	assert((*s.top)->data == s2);
+	popOutToQ(q, s, &operator);
+	assert(strcmp(q.list->head->data,s2) == 0);
+	assert((*s.top)->data == s1);
+}
+
+void test_popUntilOpeningParenthesisFound_moves_stack_elements_between_parenthesis_to_queue_with_space_in_between(){
+	Queue q = createQueue();
+	Stack s = createStack();
+	String s1="+", s2="(", s3="+", s4="-",s5="*",space=" ",token;
+	push(s, s1); push(s, s2); push(s, s3); 
+	push(s, s4); push(s, s5);
+	assert(popUntilOpeningParenthesisFound(s, q, &token)==1);
+	assert(strcmp(q.list->head->data,s5) == 0);
+	assert(strcmp(q.list->tail->data,space) == 0);
+}
+
+void test_popUntilOpeningParenthesisFound_returns_0_when_stack_is_empty(){
+	Queue q = createQueue(); Stack s = createStack();
+	assert(popUntilOpeningParenthesisFound(s, q, NULL)==0);
+}
+
 void test_infixToPostfix_returns_rpn_expression_with_simple_infix_exprssion_with_parenthises(){
 	String rpn_expression = infixToPostfix(" 2 + ( 10 + 5 ) + 4");
 	assertEqual(strcmp(rpn_expression, "2 10 5 + + 4 +"),0);
@@ -416,7 +444,7 @@ void test_infixToPostfix_returns_rpn_expression_from_complex_infix_exprssion_wit
 }
 
 void test_infixToPostfix_returns_rpn_expression_from_complex_infix_exprssion_with_precedence_within_nested_parenthises(){
-	String rpn_expression = infixToPostfix("1234 - 67 + ( 124 * ( 49 / 7 - 12 + ( 9 * 30 - 14 ) - ( 1 / 1 ) ) + 0 ) ^ 2 + 10");
+	String rpn_expression = infixToPostfix("1234 - 67 + (124 * ( 49 / 7 - 12 + ( 9 * 30 - 14 ) - ( 1 / 1 ) ) + 0 ) ^ 2 + 10");
 	assertEqual(strcmp(rpn_expression, "1234 67 - 124 49 7 / 12 - 9 30 * 14 - + 1 1 / - * 0 + 2 ^ + 10 +"),0);
 	free(rpn_expression);
 }
@@ -436,7 +464,7 @@ void test_evaluate_gives_answer_of_simple_rpn_expression_converted_by_infixToPos
 }
 
 void test_evaluate_gives_answer_of_rpn_expression_converted_by_my_infixToPostfix(){
-	String rpn_expression = infixToPostfix("123 - 41 + ( 12 * ( 9 / 7 ) - 12 + ( 9 * 30 ) ) ^ 1 + 10");
+	String rpn_expression = infixToPostfix(" 123 -  41 + ( 12 * ( 9 / 7 ) - 12 + ( 9 * 30 )) ^ 1 + 10");
 	assertEqual(strcmp(rpn_expression, "123 41 - 12 9 7 / * 12 - 9 30 * + 1 ^ + 10 +"),0);
 	assert(evaluate(rpn_expression).status == 362);
 	free(rpn_expression);

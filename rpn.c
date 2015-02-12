@@ -34,9 +34,12 @@ char *toString (int value, char *result, int base){
 int isNumber(char ch){
 	return '0'<=ch && ch <='9' ;
 }
+
 int isSeperator_after_number(String numbers, String expr, int i){
-	return (expr[i] == ' ' && numbers[0]>='0' && numbers[0] <= '9') || (i==strlen(expr)-1 && expr[i]>='0' && expr[i] <= '9');
+	return (expr[i] == ' ' && numbers[0]>='0' && numbers[0] <= '9') || 
+			(i==strlen(expr)-1 && expr[i]>='0' && expr[i] <= '9');
 }
+
 int pushNumber(Stack stack, String *str, int *count){
 	char str1[1], str2[1];
 	strcpy(str1, ""); strcpy(str2," ");
@@ -103,6 +106,7 @@ Result evaluate(char *expr){
 
 //-----------------------------------------------------------------------------------------------------
 
+
 int pushToQueue(Queue q, String *str, int *count, String expr, int i){
 	if(*str==NULL || strcmp(*str, "")==0 || count==NULL) return 0;
 	if(i==strlen(expr)-1){
@@ -111,7 +115,6 @@ int pushToQueue(Queue q, String *str, int *count, String expr, int i){
 	enque(q, *str); *count = 0;
 	*str = (char*)malloc(sizeof(char));
 	strcpy(*str, " "); enque(q, *str);
-	*str = (char*)calloc(1, sizeof(char));
 	return 1;
 }
 
@@ -122,6 +125,7 @@ int precedenceOf(char operator){
 	(operator == '+' || operator == '-') && (precedence = 1);
 	return precedence;
 }
+
 char topOfStack(Stack s){
 	return (*s.top) ? *(char*)(*s.top)->data : '\0';
 }
@@ -141,27 +145,25 @@ int sendToStack(Stack s, String *str, char token){
 	*str = (char*)calloc(1, sizeof(char));
 	return 1;
 }
-void takeCareOfPrecedence(Stack s, Queue q, String *str, char operator){
-	while(*s.top !=NULL && precedenceOf(operator) <= precedenceOf(topOfStack(s)) && topOfStack(s)!='('){
-		sendToQ(q, str, *(char*)pop(s));
-		sendToQ(q, str, ' ');
-	} 
-	sendToStack(s, str, operator);
+
+void popOutToQ(Queue q, Stack s, String *str){
+	sendToQ(q, str, *(char*)pop(s));
+	sendToQ(q, str, ' ');
 }
 
-int pushToStack(Stack s, Queue q, String *str, char operator){
-	if(*str==NULL) return 0;
-	(*str)[0] = operator;
-	takeCareOfPrecedence(s, q, str, operator);
+int takeCareOfPrecedence(Stack s, Queue q, String *str, char operator){
+	if(operator=='\0') return 0;
+	while(*s.top && precedenceOf(operator)<=precedenceOf(topOfStack(s)) && topOfStack(s)!='(')
+		popOutToQ(q, s, str); 
+	sendToStack(s, str, operator);
 	return 1;
 }
 
 int popUntilOpeningParenthesisFound(Stack s, Queue q, String *str){
-	if(!*s.top || !*str) return 0;
-	while(*s.top && topOfStack(s) != '('){
-		sendToQ(q, str,*(char*)pop(s));
-		sendToQ(q, str, ' ');
-	} pop(s);
+	if(!*s.top) return 0;
+	while(*s.top && topOfStack(s) != '(')
+		popOutToQ(q, s, str);
+	pop(s); 
 	return 1;
 }
 
@@ -182,7 +184,7 @@ void copyToPostfixString(Queue q, Stack s, String result){
 char * infixToPostfix(char * expr){
 	int i, j=0;
 	Stack stack = createStack(); Queue q = createQueue(); 
-	String numbers = malloc(sizeof(char)); 
+	String numbers = calloc(1,sizeof(char)); 
 	String result = (String)calloc(sizeof(char),(strlen(expr))+1);
 	
 	for(i=0; i<strlen(expr); i++){
@@ -190,7 +192,7 @@ char * infixToPostfix(char * expr){
 
 		isSeperator_after_number(numbers, expr, i) && pushToQueue(q, &numbers, &j, expr, i);
 
-		isOperator(expr[i]) && pushToStack(stack, q, &numbers, expr[i]);
+		isOperator(expr[i]) && takeCareOfPrecedence(stack, q, &numbers, expr[i]);
 
 		handleParenthesis(stack, q, &numbers, expr[i]);
 	}

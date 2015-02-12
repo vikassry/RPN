@@ -10,7 +10,6 @@ struct result {
   int status;
 };
 
-
 int isNumber(char);
 int isOperator(char);
 int isSeperator_after_number(String, String, int);
@@ -24,6 +23,8 @@ int pushToQueue(Queue, String*, int*, String, int);
 char topOfStack(Stack);
 void sendToQ(Queue, String*, char);
 int sendToStack(Stack, String*, char);
+void popOutToQ(Queue, Stack, String*);
+int popUntilOpeningParenthesisFound(Stack, Queue, String *);
 void copyToPostfixString(Queue, Stack, String);
 
 Result evaluate(char * expression);
