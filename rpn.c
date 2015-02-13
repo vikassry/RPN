@@ -131,16 +131,16 @@ char topOfStack(Stack s){
 }
 
 void sendToQ(Queue q, String *str, char token){
-	*str = (char*)calloc(1, sizeof(char));
-	(*str)[0] = token;
+	*str = (char*)calloc(2, sizeof(char));
+	(*str)[0] = token; (*str)[1]='\0';
 	enque(q, *str);
 	*str = (char*)calloc(1, sizeof(char));
 }
 
 int sendToStack(Stack s, String *str, char token){
 	if(!*str || token == '\0') return 0;
-	*str = (char*)calloc(1, sizeof(char));
-	(*str)[0] = token;
+	*str = (char*)calloc(2, sizeof(char));
+	(*str)[0] = token; (*str)[1]='\0';
 	push(s, *str);
 	*str = (char*)calloc(1, sizeof(char));
 	return 1;
